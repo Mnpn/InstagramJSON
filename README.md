@@ -6,7 +6,7 @@ InstagramJSON extracts your messages from your download archive to individual .t
 
 <img src="https://i.imgur.com/eXWWaHN.png" alt="Not actually how it works" width="50%" height="auto" align="right"></img>
 ### Installation
-The best way to get InstagramJSON is to grab an binary, download the latest release [here](https://github.com/Mnpn03/InstagramJSON/releases)!
+The best way to get InstagramJSON is to grab a binary, download the latest release [here](https://github.com/Mnpn03/InstagramJSON/releases)!
 
 If you instead want to compile InstagramJSON, you can do so by getting [Rust](https://www.rust-lang.org/).
 Once that is installed, clone the repository:
