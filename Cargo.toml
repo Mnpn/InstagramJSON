@@ -1,0 +1,10 @@
+[package]
+name = "instagramjson"
+version = "1.1.0"
+authors = ["Martin Persson <mnpn03@icloud.com>"]
+
+[dependencies]
+clap = "2.31.2"
+serde = "1.0.57"
+serde_json = "1.0.17"
+serde_derive = "1.0.57"
