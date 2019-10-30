@@ -67,7 +67,7 @@ fn main() -> Result<(), Error> {
 			acc + s
 		});
 		name.push_str(".txt");
-		let mut file = OpenOptions::new().write(true).create(true).append(false).open(exdir.to_owned() + "/" + &name)?;
+		let mut file = OpenOptions::new().write(true).create(true).append(true).open(exdir.to_owned() + "/" + &name)?;
 
 		for message in &mut thing.conversation.iter_mut().rev() { // reverse to sort properly (again)
 			(0..13).for_each(|_| { message.created_at.pop(); }); // bodges to make the time look nice
@@ -76,7 +76,9 @@ fn main() -> Result<(), Error> {
 				"({}) {}: {}{}{}\n",
 				timestamp,
 				message.sender,
-				if let Some(ref story_share) = message.story_share { story_share.to_owned() + " - " } else { String::new() },
+				if let Some(ref story_share) = message.story_share {
+					if message.text.as_ref().map(|s| &**s).unwrap_or("") != "" { story_share.to_owned() + " - " } else { story_share.to_owned() }
+				} else { String::new() },
 				if let Some(ref media_owner) = message.media_owner {
 					if media_owner == "Username unavailable." {
 						"Sent an unavailable post".to_owned()
