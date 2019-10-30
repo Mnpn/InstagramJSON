@@ -22,7 +22,7 @@ struct Message {
 	story_share: Option<String>,
 	text: Option<String>,
 	media: Option<String>,
-	// to-do: include "Shared <username>'s post"
+	media_owner: Option<String>,
 }
 
 fn main() -> Result<(), Error> {
@@ -42,7 +42,7 @@ fn main() -> Result<(), Error> {
 	let filepath = matches.value_of("filepath").unwrap();
 	let file = File::open(&filepath)?;
 
-	println!("Loading JSON.. this might take a while, depending on the size.");
+	println!("Reading JSON.. this might take a while, depending on the size.");
 	let mut things: Vec<Thing> = serde_json::from_reader(file)?;
 
 	println!("Starting extraction from {}.", filepath);
@@ -61,10 +61,17 @@ fn main() -> Result<(), Error> {
 			(0..13).for_each(|_| { message.created_at.pop(); }); // bodges to make the time look nice
 			let timestamp = message.created_at.replace("T", " "); // more bodges
 			let string = format!(
-				"({}) {}: {}{}\n",
+				"({}) {}: {}{}{}\n",
 				timestamp,
 				message.sender,
 				if let Some(ref story_share) = message.story_share { story_share.to_owned() + " - " } else { String::new() },
+				if let Some(ref media_owner) = message.media_owner {
+					if media_owner == "Username unavailable." {
+						"Sent an unavailable post".to_owned()
+					} else {
+						"Sent a post by ".to_owned() + &media_owner.to_owned()
+					}
+				} else { String::new() },
 				if let Some(ref media) = message.media { media } else { message.text.as_ref().map(|s| &**s).unwrap_or("") }
 			);
 			file.write_all(string.as_bytes())?; // write the results to the .txt
