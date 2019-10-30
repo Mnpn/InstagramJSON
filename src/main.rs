@@ -49,7 +49,7 @@ fn main() -> Result<(), Error> {
 	let filepath = matches.value_of("filepath").unwrap();
 	let mut exdir = "";
 	if matches.is_present("folder") {
-		exdir = matches.value_of("directory").unwrap();
+		exdir = matches.value_of("folder").unwrap();
 		fs::create_dir_all(exdir)?;
 	}
 	let file = File::open(&filepath)?;
@@ -67,7 +67,7 @@ fn main() -> Result<(), Error> {
 			acc + s
 		});
 		name.push_str(".txt");
-		let mut file = OpenOptions::new().write(true).create(true).append(true).open(exdir.to_owned() + &name)?;
+		let mut file = OpenOptions::new().write(true).create(true).append(false).open(exdir.to_owned() + "/" + &name)?;
 
 		for message in &mut thing.conversation.iter_mut().rev() { // reverse to sort properly (again)
 			(0..13).for_each(|_| { message.created_at.pop(); }); // bodges to make the time look nice
