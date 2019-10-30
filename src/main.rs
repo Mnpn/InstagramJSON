@@ -6,6 +6,7 @@ extern crate serde_json;
 extern crate serde_derive;
 use clap::{App, Arg};
 use std::io::{Error, Write};
+use std::fs;
 use std::fs::{File, OpenOptions};
 use std::time::Instant;
 
@@ -35,11 +36,22 @@ fn main() -> Result<(), Error> {
 			.help("The .json file you wish to convert to .txt files.")
 			.required(true) // Make argument required.
 			.index(1))
+		.arg(Arg::with_name("folder")
+			.help("Optional export path. Will export to current directory if not set.")
+			.required(false)
+			.takes_value(true)
+			.short("f")
+			.long("folder"))
 		.get_matches();
 
 	// Define variables.
 	let now = Instant::now();
 	let filepath = matches.value_of("filepath").unwrap();
+	let mut exdir = "";
+	if matches.is_present("folder") {
+		exdir = matches.value_of("directory").unwrap();
+		fs::create_dir_all(exdir)?;
+	}
 	let file = File::open(&filepath)?;
 
 	println!("Reading JSON.. this might take a while, depending on the size.");
@@ -55,7 +67,7 @@ fn main() -> Result<(), Error> {
 			acc + s
 		});
 		name.push_str(".txt");
-		let mut file = OpenOptions::new().write(true).create(true).append(true).open(name)?;
+		let mut file = OpenOptions::new().write(true).create(true).append(true).open(exdir.to_owned() + &name)?;
 
 		for message in &mut thing.conversation.iter_mut().rev() { // reverse to sort properly (again)
 			(0..13).for_each(|_| { message.created_at.pop(); }); // bodges to make the time look nice
