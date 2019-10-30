@@ -1,6 +1,6 @@
 [package]
 name = "instagramjson"
-version = "1.1.0"
+version = "1.2.0"
 authors = ["Martin Persson <mnpn03@icloud.com>"]
 
 [dependencies]
