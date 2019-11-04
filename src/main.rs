@@ -47,10 +47,12 @@ fn main() -> Result<(), Error> {
 	// Define variables.
 	let now = Instant::now();
 	let filepath = matches.value_of("filepath").unwrap();
-	let mut exdir = "";
-	if matches.is_present("folder") {
-		exdir = matches.value_of("folder").unwrap();
+	let mut dirname = String::new();
+	if matches.is_present("folder") { // if the folder arg exists
+		let exdir = matches.value_of("folder").unwrap();
 		fs::create_dir_all(exdir)?;
+		let dirname_owned = exdir.to_owned() + "/";
+		dirname = dirname_owned;
 	}
 	let file = File::open(&filepath)?;
 
@@ -67,7 +69,8 @@ fn main() -> Result<(), Error> {
 			acc + s
 		});
 		name.push_str(".txt");
-		let mut file = OpenOptions::new().write(true).create(true).append(true).open(exdir.to_owned() + "/" + &name)?;
+		let fulldir = dirname.to_owned() + &name;
+		let mut file = OpenOptions::new().write(true).create(true).append(true).open(fulldir)?;
 
 		for message in &mut thing.conversation.iter_mut().rev() { // reverse to sort properly (again)
 			(0..13).for_each(|_| { message.created_at.pop(); }); // bodges to make the time look nice
@@ -76,11 +79,11 @@ fn main() -> Result<(), Error> {
 				"({}) {}: {}{}{}\n",
 				timestamp,
 				message.sender,
-				if let Some(ref story_share) = message.story_share {
+				if let Some(ref story_share) = message.story_share { // if a shared story exists
 					if message.text.as_ref().map(|s| &**s).unwrap_or("") != "" { story_share.to_owned() + " - " } else { story_share.to_owned() }
 				} else { String::new() },
-				if let Some(ref media_owner) = message.media_owner {
-					if media_owner == "Username unavailable." {
+				if let Some(ref media_owner) = message.media_owner { // if a shared post exists
+					if media_owner == "Username unavailable." { // if the post is no longer available
 						"Sent an unavailable post".to_owned()
 					} else {
 						"Sent a post by ".to_owned() + &media_owner.to_owned()
