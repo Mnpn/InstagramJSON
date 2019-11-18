@@ -34,11 +34,10 @@ fn main() -> Result<(), Error> {
 		.author(crate_authors!())
 		.arg(Arg::with_name("filepath")
 			.help("The .json file you wish to convert to .txt files.")
-			.required(true) // Make argument required.
+			.required(true)
 			.index(1))
 		.arg(Arg::with_name("folder")
 			.help("Optional export path. Will export to current directory if not set.")
-			.required(false)
 			.takes_value(true)
 			.short("f")
 			.long("folder"))
@@ -68,9 +67,12 @@ fn main() -> Result<(), Error> {
 			}
 			acc + s
 		});
+		let names = name.clone();
 		name.push_str(".txt");
 		let fulldir = dirname.to_owned() + &name;
 		let mut file = OpenOptions::new().write(true).create(true).append(true).open(fulldir)?;
+
+		file.write_all(format!("-- Start of conversation with {} --\n", names).as_bytes())?;
 
 		for message in &mut thing.conversation.iter_mut().rev() { // reverse to sort properly (again)
 			(0..13).for_each(|_| { message.created_at.pop(); }); // bodges to make the time look nice
@@ -93,6 +95,7 @@ fn main() -> Result<(), Error> {
 			);
 			file.write_all(string.as_bytes())?; // write the results to the .txt
 		}
+		file.write_all("-- End --".as_bytes())?;
 	}
 	
 	println!("Finished in {} seconds.", now.elapsed().as_secs());
