@@ -17,13 +17,15 @@ Then you simply build it by running `cargo build --release`.
 ```
 macOS/Linux:
 $ ./instagramjson messages.json
+$ ./instagramjson messages.json -f foldername
 Windows:
 > instagramjson.exe messages.json
+> instagramjson.exe messages.json -f foldername
 ```
 
 An example of a line from one of the exported conversations:
 ```
-(2019-12-25 14:56:12) user1: This is rather neat, isn't it?
+[2019-12-25 14:56:12] user1: This is rather neat, isn't it?
 ```
 
 ### Contribution
