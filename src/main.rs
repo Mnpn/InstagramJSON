@@ -78,7 +78,7 @@ fn main() -> Result<(), Error> {
 			(0..13).for_each(|_| { message.created_at.pop(); }); // bodges to make the time look nice
 			let timestamp = message.created_at.replace("T", " "); // more bodges
 			let string = format!(
-				"({}) {}: {}{}{}\n",
+				"[{}] {}: {}{}{}\n",
 				timestamp,
 				message.sender,
 				if let Some(ref story_share) = message.story_share { // if a shared story exists
